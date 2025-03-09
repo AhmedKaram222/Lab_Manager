@@ -44,6 +44,13 @@ const MainMenu = () => {
           />
 
           <MenuCard
+            title="التحاليل"
+            icon={<FileText className="h-12 w-12" />}
+            path="/tests"
+            description="إدارة وعرض جميع التحاليل"
+          />
+
+          <MenuCard
             title="نتائج التحاليل"
             icon={<FileText className="h-12 w-12" />}
             path="/results"

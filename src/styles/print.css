@@ -1,0 +1,75 @@
+/* أنماط خاصة بالطباعة */
+@media print {
+  /* إخفاء العناصر التي لا نريد طباعتها */
+  header,
+  footer,
+  nav,
+  aside,
+  .sidebar,
+  .tabs-list,
+  .button,
+  button,
+  .card-header,
+  .card > div:first-child,
+  .tabs-content > div:not([data-state="active"]),
+  *:not(.print-only):not(.print-only *):not(.report-card.print-only):not(
+      .report-card.print-only *
+    ) {
+    display: none !important;
+  }
+
+  /* عرض التقرير النشط فقط */
+  .tabs-content > div[data-state="active"] {
+    display: block !important;
+  }
+
+  /* تنسيق الصفحة */
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: white;
+  }
+
+  /* تنسيق بطاقة التقرير */
+  .report-card {
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    position: relative !important;
+    z-index: 9999 !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* تنسيق حاوية التقرير */
+  .report-content-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  /* إزالة الهوامش والحدود من الجداول */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  /* تنسيق عنوان التقرير */
+  .card-header {
+    text-align: center !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* تنسيق محتوى التقرير */
+  .card-content {
+    padding: 0 !important;
+  }
+
+  /* إظهار عنوان التقرير في الطباعة */
+  .report-card .card-header {
+    display: block !important;
+  }
+}

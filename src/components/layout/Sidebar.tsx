@@ -17,7 +17,7 @@ const navItems = [
   { name: "تسجيل البيانات", path: "/patient-registration", icon: UserPlus },
   { name: "المرضى", path: "/patients", icon: Users },
   { name: "التحاليل", path: "/tests", icon: FileText },
-  { name: "النتائج", path: "/results", icon: FileText },
+  { name: "نتائج التحاليل", path: "/results", icon: FileText },
   { name: "البحث", path: "/search", icon: Search },
   { name: "الإحصائيات", path: "/statistics", icon: BarChart2 },
   { name: "الإعدادات", path: "/settings", icon: Settings },
