@@ -172,6 +172,17 @@ const ResultsPage = () => {
       }
 
       // تعيين المريض المحدد لعرض التقرير
+      const today = new Date().toLocaleDateString("en-GB").replace(/\//g, "");
+      const patientCount =
+        patients
+          .filter((p) => {
+            const patientDate = new Date(p.date)
+              .toLocaleDateString("en-GB")
+              .replace(/\//g, "");
+            return patientDate === today;
+          })
+          .findIndex((p) => p.id === test.patientId) + 1;
+
       setSelectedPatient({
         id: test.id,
         name: test.patientName,
@@ -179,6 +190,7 @@ const ResultsPage = () => {
         gender: test.gender,
         testType: reportType,
         reportType: reportTabType,
+        reportNumber: `result_${today}_${patientCount > 0 ? patientCount : 1}`,
       });
 
       // تعيين المريض المحدد وتأخير قصير للسماح بتحديث واجهة المستخدم
@@ -367,23 +379,36 @@ const ResultsPage = () => {
                                   }
                                 }
 
+                                // استخدام واجهة برمجة التطبيقات للطباعة لعرض مربع حوار الطابعات
+                                const mediaQueryList =
+                                  window.matchMedia("print");
+
+                                // إضافة مستمع للحدث لمعرفة متى تنتهي الطباعة
+                                const handlePrintEvent = (mql) => {
+                                  if (!mql.matches) {
+                                    // تمت الطباعة أو تم إلغاؤها
+                                    document.body.classList.remove(
+                                      "printing-report",
+                                    );
+                                    const printOnlyElements =
+                                      document.querySelectorAll(".print-only");
+                                    printOnlyElements.forEach((el) =>
+                                      el.classList.remove("print-only"),
+                                    );
+
+                                    // إخفاء التقرير بعد الطباعة
+                                    setShowReport(false);
+                                    setSelectedPatient(null);
+
+                                    // إزالة المستمع
+                                    mediaQueryList.removeListener(
+                                      handlePrintEvent,
+                                    );
+                                  }
+                                };
+
+                                mediaQueryList.addListener(handlePrintEvent);
                                 window.print();
-
-                                // إزالة الفئات بعد الطباعة
-                                setTimeout(() => {
-                                  document.body.classList.remove(
-                                    "printing-report",
-                                  );
-                                  const printOnlyElements =
-                                    document.querySelectorAll(".print-only");
-                                  printOnlyElements.forEach((el) =>
-                                    el.classList.remove("print-only"),
-                                  );
-
-                                  // إخفاء التقرير بعد الطباعة
-                                  setShowReport(false);
-                                  setSelectedPatient(null);
-                                }, 500);
                               }, 1000);
                             }}
                           >

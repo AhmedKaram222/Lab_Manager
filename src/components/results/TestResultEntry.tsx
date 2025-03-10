@@ -114,13 +114,24 @@ const TestResultEntry = () => {
   const handleSaveResults = () => {
     if (selectedTest) {
       // إنشاء نتيجة تحليل جديدة
+      const today = new Date().toLocaleDateString("en-GB").replace(/\//g, "");
+      const patientCount =
+        patients
+          .filter((p) => {
+            const patientDate = new Date(p.date)
+              .toLocaleDateString("en-GB")
+              .replace(/\//g, "");
+            return patientDate === today;
+          })
+          .findIndex((p) => p.id === selectedTest.patientId) + 1;
+
       const newResult = {
-        id: `result_${Date.now()}_${selectedTest.patientId}`,
+        id: `result_${today}_${patientCount > 0 ? patientCount : 1}`,
         patientId: selectedTest.patientId,
         patientName: selectedTest.patientName,
         testType: selectedTest.testType,
         date: selectedTest.date,
-        resultDate: new Date().toLocaleDateString(),
+        resultDate: new Date().toLocaleDateString("en-GB"), // تنسيق DD/MM/YYYY
         age: selectedTest.age,
         gender: selectedTest.gender,
         status: "completed",
@@ -237,11 +248,30 @@ const TestResultEntry = () => {
               onClick={() => {
                 // إضافة فئة للطباعة على عنصر الجسم
                 document.body.classList.add("printing-report");
-                window.print();
-                // إزالة الفئة بعد الطباعة
+
+                // تأخير قصير للسماح بتحديث DOM
                 setTimeout(() => {
-                  document.body.classList.remove("printing-report");
-                }, 500);
+                  try {
+                    // استخدام واجهة برمجة التطبيقات للطباعة لعرض مربع حوار الطابعات
+                    const mediaQueryList = window.matchMedia("print");
+
+                    // إضافة مستمع للحدث لمعرفة متى تنتهي الطباعة
+                    const handlePrintEvent = (mql) => {
+                      if (!mql.matches) {
+                        // تمت الطباعة أو تم إلغاؤها
+                        document.body.classList.remove("printing-report");
+                        mediaQueryList.removeListener(handlePrintEvent);
+                      }
+                    };
+
+                    mediaQueryList.addListener(handlePrintEvent);
+                    window.print();
+                  } catch (error) {
+                    console.error("Print error:", error);
+                    // إزالة الفئة في حالة حدوث خطأ
+                    document.body.classList.remove("printing-report");
+                  }
+                }, 100);
               }}
             >
               <Printer className="h-4 w-4 ml-2" />

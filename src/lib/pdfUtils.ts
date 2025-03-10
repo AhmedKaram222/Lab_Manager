@@ -144,7 +144,8 @@ export const downloadTestReport = async (
   patientName: string,
 ) => {
   const elementId = "test-report-content";
-  const fileName = `${reportType}_${patientName.replace(/ /g, "_")}_${new Date().toISOString().split("T")[0]}.pdf`;
+  const today = new Date().toLocaleDateString("en-GB").replace(/\//g, "");
+  const fileName = `${reportType}_${patientName.replace(/ /g, "_")}_${today}.pdf`;
 
   // تمرير خيار onlyActiveTab لتحديد منطقة نتيجة التحليل فقط
   const success = await generatePDF(elementId, fileName, {

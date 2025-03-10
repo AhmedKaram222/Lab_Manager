@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { isOutOfRange } from "./utils";
+import TextFormatter from "@/components/ui/text-formatter";
+import FormattedText from "@/components/ui/formatted-text";
 
 interface ProthrombinTimeReportProps {
   patientName?: string;
@@ -16,7 +18,7 @@ const ProthrombinTimeReport = ({
   patientName = "",
   patientAge = "",
   patientGender = "",
-  reportDate = new Date().toLocaleDateString(),
+  reportDate = new Date().toLocaleDateString("en-GB"), // تنسيق DD/MM/YYYY
   reportNumber = "",
   doctorName = "",
 }: ProthrombinTimeReportProps) => {
@@ -109,6 +111,22 @@ const ProthrombinTimeReport = ({
 
         {/* جدول نتائج تحليل زمن البروثرومبين */}
         <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border border-gray-300 p-2 text-left font-bold">
+                Test
+              </th>
+              <th className="border border-gray-300 p-2 text-center font-bold">
+                Result
+              </th>
+              <th className="border border-gray-300 p-2 text-center font-bold">
+                Unit
+              </th>
+              <th className="border border-gray-300 p-2 text-center font-bold">
+                Ref.Range
+              </th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
               <td className="border border-gray-300 p-2 font-bold">
@@ -116,7 +134,7 @@ const ProthrombinTimeReport = ({
               </td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.pt, normalRanges.pt) ? "font-bold text-red-600" : ""}`}
                   value={results.pt}
                   onChange={(e) => handleResultChange("pt", e.target.value)}
                 />
@@ -136,7 +154,7 @@ const ProthrombinTimeReport = ({
               <td className="border border-gray-300 p-2 font-bold">Control</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.control, normalRanges.control) ? "font-bold text-red-600" : ""}`}
                   value={results.control}
                   onChange={(e) =>
                     handleResultChange("control", e.target.value)
@@ -158,7 +176,7 @@ const ProthrombinTimeReport = ({
               <td className="border border-gray-300 p-2 font-bold">Conc</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.conc, normalRanges.conc) ? "font-bold text-red-600" : ""}`}
                   value={results.conc}
                   onChange={(e) => handleResultChange("conc", e.target.value)}
                 />
@@ -178,7 +196,7 @@ const ProthrombinTimeReport = ({
               <td className="border border-gray-300 p-2 font-bold">INR</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.inr, normalRanges.inr) ? "font-bold text-red-600" : ""}`}
                   value={results.inr}
                   onChange={(e) => handleResultChange("inr", e.target.value)}
                 />
@@ -198,15 +216,19 @@ const ProthrombinTimeReport = ({
         </table>
 
         {/* قسم التعليقات */}
-        <div className="mt-4 p-4 border-t border-gray-200">
-          <div className="font-bold mb-2">Comments:</div>
-          <Textarea
-            className="w-full"
-            rows={3}
-            value={comments}
-            onChange={(e) => setComments(e.target.value)}
-            placeholder="Add any comments or notes here..."
-          />
+        <div className="mt-4 p-2 border-t border-gray-300">
+          <div className="font-bold">Comment:</div>
+          <div className="mt-1">
+            <TextFormatter
+              value={comments}
+              onChange={setComments}
+              rows={2}
+              placeholder="Prothrombin time test results."
+            />
+          </div>
+          <div className="mt-4 text-right">
+            <div className="font-bold">Signature</div>
+          </div>
         </div>
       </CardContent>
     </Card>

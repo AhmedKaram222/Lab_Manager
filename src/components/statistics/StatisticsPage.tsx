@@ -1,39 +1,142 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Activity, DollarSign, TrendingUp, Calendar } from "lucide-react";
+import { getPatients, getTestResults } from "../tests/TestsService";
 
-const dailyStats = {
-  totalTests: 24,
-  completedTests: 16,
-  pendingTests: 8,
-  revenue: 1250,
+const calculateStats = (period: "daily" | "weekly" | "monthly") => {
+  // استرجاع بيانات المرضى والتحاليل
+  const patients = getPatients();
+  const testResults = getTestResults();
+
+  // الحصول على التاريخ الحالي
+  const currentDate = new Date();
+  let startDate = new Date();
+
+  // تحديد تاريخ البداية حسب الفترة
+  if (period === "daily") {
+    startDate.setHours(0, 0, 0, 0);
+  } else if (period === "weekly") {
+    startDate.setDate(currentDate.getDate() - 7);
+  } else if (period === "monthly") {
+    startDate.setMonth(currentDate.getMonth() - 1);
+  }
+
+  // تصفية المرضى حسب الفترة
+  const filteredPatients = patients.filter((patient) => {
+    if (!patient.date) return false;
+    const patientDate = new Date(patient.date);
+    return patientDate >= startDate && patientDate <= currentDate;
+  });
+
+  // تصفية نتائج التحاليل حسب الفترة
+  const filteredResults = testResults.filter((result) => {
+    if (!result.date) return false;
+    const resultDate = new Date(result.date);
+    return resultDate >= startDate && resultDate <= currentDate;
+  });
+
+  // حساب إجمالي التحاليل
+  let totalTests = 0;
+  let revenue = 0;
+
+  // حساب عدد التحاليل والإيرادات من المرضى المسجلين
+  filteredPatients.forEach((patient) => {
+    if (patient.test1) totalTests++;
+    if (patient.test2) totalTests++;
+    if (patient.test3) totalTests++;
+
+    // حساب الإيرادات
+    revenue += patient.total || 0;
+  });
+
+  // حساب التحاليل المكتملة والمعلقة
+  const completedTests = filteredResults.filter(
+    (result) => result.status === "completed",
+  ).length;
+  const pendingTests = totalTests - completedTests;
+
+  return {
+    totalTests,
+    completedTests,
+    pendingTests,
+    revenue,
+  };
 };
 
-const weeklyStats = {
-  totalTests: 145,
-  completedTests: 120,
-  pendingTests: 25,
-  revenue: 8750,
+// حساب توزيع أنواع التحاليل
+const calculateTestTypeDistribution = () => {
+  const patients = getPatients();
+  const testCounts: Record<string, number> = {};
+  const testNames: Record<string, string> = {
+    "1": "تحليل دم شامل",
+    "2": "وظائف كبد",
+    "3": "وظائف كلى",
+    "4": "سكر صائم",
+    "5": "صورة دم كاملة",
+    "6": "تحليل بول",
+    "7": "هرمونات",
+    "8": "دهون",
+    "9": "فيتامين د",
+    "10": "فيروسات كبدية",
+  };
+
+  // حساب عدد كل نوع من التحاليل
+  patients.forEach((patient) => {
+    if (patient.test1) {
+      const testName = testNames[patient.test1] || "تحليل غير معروف";
+      testCounts[testName] = (testCounts[testName] || 0) + 1;
+    }
+    if (patient.test2) {
+      const testName = testNames[patient.test2] || "تحليل غير معروف";
+      testCounts[testName] = (testCounts[testName] || 0) + 1;
+    }
+    if (patient.test3) {
+      const testName = testNames[patient.test3] || "تحليل غير معروف";
+      testCounts[testName] = (testCounts[testName] || 0) + 1;
+    }
+  });
+
+  // حساب إجمالي التحاليل
+  const totalCount = Object.values(testCounts).reduce(
+    (sum, count) => sum + count,
+    0,
+  );
+
+  // تحويل البيانات إلى التنسيق المطلوب
+  const result = Object.entries(testCounts).map(([name, count]) => ({
+    name,
+    count,
+    percentage: totalCount > 0 ? Math.round((count / totalCount) * 100) : 0,
+  }));
+
+  // ترتيب النتائج تنازليًا حسب العدد
+  return result.sort((a, b) => b.count - a.count);
 };
 
-const monthlyStats = {
-  totalTests: 620,
-  completedTests: 580,
-  pendingTests: 40,
-  revenue: 37500,
-};
-
-const testTypes = [
-  { name: "تحليل دم شامل", count: 8, percentage: 33 },
-  { name: "وظائف كبد", count: 5, percentage: 21 },
-  { name: "وظائف كلى", count: 4, percentage: 17 },
-  { name: "سكر صائم", count: 3, percentage: 13 },
-  { name: "صورة دم كاملة", count: 2, percentage: 8 },
-  { name: "تحليل بول", count: 1, percentage: 4 },
-  { name: "هرمونات", count: 1, percentage: 4 },
-];
+const dailyStats = calculateStats("daily");
+const weeklyStats = calculateStats("weekly");
+const monthlyStats = calculateStats("monthly");
+const testTypes = calculateTestTypeDistribution();
 
 const StatisticsPage = () => {
+  const [stats, setStats] = useState({
+    daily: dailyStats,
+    weekly: weeklyStats,
+    monthly: monthlyStats,
+    testTypes: testTypes,
+  });
+
+  // تحديث الإحصائيات عند تحميل الصفحة
+  useEffect(() => {
+    setStats({
+      daily: calculateStats("daily"),
+      weekly: calculateStats("weekly"),
+      monthly: calculateStats("monthly"),
+      testTypes: calculateTestTypeDistribution(),
+    });
+  }, []);
+
   return (
     <div className="space-y-6" dir="rtl">
       <h1 className="text-3xl font-bold">الإحصائيات</h1>
@@ -55,15 +158,15 @@ const StatisticsPage = () => {
         </TabsList>
 
         <TabsContent value="daily">
-          <StatsSummary stats={dailyStats} />
+          <StatsSummary stats={stats.daily} />
         </TabsContent>
 
         <TabsContent value="weekly">
-          <StatsSummary stats={weeklyStats} />
+          <StatsSummary stats={stats.weekly} />
         </TabsContent>
 
         <TabsContent value="monthly">
-          <StatsSummary stats={monthlyStats} />
+          <StatsSummary stats={stats.monthly} />
         </TabsContent>
       </Tabs>
 
@@ -74,22 +177,28 @@ const StatisticsPage = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {testTypes.map((type) => (
-                <div key={type.name} className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>{type.name}</span>
-                    <span className="text-muted-foreground">
-                      {type.count} تحليل ({type.percentage}%)
-                    </span>
+              {stats.testTypes.length > 0 ? (
+                stats.testTypes.map((type) => (
+                  <div key={type.name} className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>{type.name}</span>
+                      <span className="text-muted-foreground">
+                        {type.count} تحليل ({type.percentage}%)
+                      </span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2.5">
+                      <div
+                        className="bg-primary h-2.5 rounded-full"
+                        style={{ width: `${type.percentage}%` }}
+                      ></div>
+                    </div>
                   </div>
-                  <div className="w-full bg-muted rounded-full h-2.5">
-                    <div
-                      className="bg-primary h-2.5 rounded-full"
-                      style={{ width: `${type.percentage}%` }}
-                    ></div>
-                  </div>
+                ))
+              ) : (
+                <div className="text-center py-4 text-muted-foreground">
+                  لا توجد بيانات متاحة بعد
                 </div>
-              ))}
+              )}
             </div>
           </CardContent>
         </Card>
@@ -105,7 +214,16 @@ const StatisticsPage = () => {
                   <p className="text-sm text-muted-foreground">
                     نسبة إكمال التحاليل
                   </p>
-                  <p className="text-2xl font-bold">67%</p>
+                  <p className="text-2xl font-bold">
+                    {stats.daily.totalTests > 0
+                      ? Math.round(
+                          (stats.daily.completedTests /
+                            stats.daily.totalTests) *
+                            100,
+                        )
+                      : 0}
+                    %
+                  </p>
                 </div>
                 <div className="p-2 bg-primary/10 rounded-full text-primary">
                   <Activity className="h-6 w-6" />
@@ -129,7 +247,12 @@ const StatisticsPage = () => {
                   <p className="text-sm text-muted-foreground">
                     متوسط الإيراد لكل تحليل
                   </p>
-                  <p className="text-2xl font-bold">52 ج.م</p>
+                  <p className="text-2xl font-bold">
+                    {stats.daily.totalTests > 0
+                      ? Math.round(stats.daily.revenue / stats.daily.totalTests)
+                      : 0}{" "}
+                    ج.م
+                  </p>
                 </div>
                 <div className="p-2 bg-primary/10 rounded-full text-primary">
                   <DollarSign className="h-6 w-6" />
@@ -176,8 +299,10 @@ const StatsSummary = ({ stats }: StatsProps) => {
               <p className="text-sm text-muted-foreground">التحاليل المكتملة</p>
               <p className="text-2xl font-bold mt-1">{stats.completedTests}</p>
               <p className="text-xs text-muted-foreground mt-1">
-                {Math.round((stats.completedTests / stats.totalTests) * 100)}%
-                من الإجمالي
+                {stats.totalTests > 0
+                  ? Math.round((stats.completedTests / stats.totalTests) * 100)
+                  : 0}
+                % من الإجمالي
               </p>
             </div>
             <div className="p-2 bg-primary/10 rounded-full text-primary">
@@ -196,8 +321,10 @@ const StatsSummary = ({ stats }: StatsProps) => {
               </p>
               <p className="text-2xl font-bold mt-1">{stats.pendingTests}</p>
               <p className="text-xs text-muted-foreground mt-1">
-                {Math.round((stats.pendingTests / stats.totalTests) * 100)}% من
-                الإجمالي
+                {stats.totalTests > 0
+                  ? Math.round((stats.pendingTests / stats.totalTests) * 100)
+                  : 0}
+                % من الإجمالي
               </p>
             </div>
             <div className="p-2 bg-primary/10 rounded-full text-primary">

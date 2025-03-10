@@ -3,6 +3,7 @@
 // استيراد بيانات المرضى من التخزين المحلي
 export const getPatients = () => {
   const storedPatients = localStorage.getItem("patients");
+  console.log("Retrieved patients from localStorage:", storedPatients);
   return storedPatients ? JSON.parse(storedPatients) : [];
 };
 

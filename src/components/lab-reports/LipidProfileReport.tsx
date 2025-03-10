@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { isOutOfRange } from "./utils";
+import TextFormatter from "@/components/ui/text-formatter";
+import FormattedText from "@/components/ui/formatted-text";
 
 interface LipidProfileReportProps {
   patientName?: string;
@@ -16,7 +18,7 @@ const LipidProfileReport = ({
   patientName = "",
   patientAge = "",
   patientGender = "",
-  reportDate = new Date().toLocaleDateString(),
+  reportDate = new Date().toLocaleDateString("en-GB"), // تنسيق DD/MM/YYYY
   reportNumber = "",
   doctorName = "",
 }: LipidProfileReportProps) => {
@@ -131,7 +133,7 @@ const LipidProfileReport = ({
               </td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.cholesterol, normalRanges.cholesterol) ? "font-bold text-red-600" : ""}`}
                   value={results.cholesterol}
                   onChange={(e) =>
                     handleResultChange("cholesterol", e.target.value)
@@ -153,7 +155,7 @@ const LipidProfileReport = ({
               <td className="border border-gray-300 p-2">Triglycerides</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.triglycerides, normalRanges.triglycerides) ? "font-bold text-red-600" : ""}`}
                   value={results.triglycerides}
                   onChange={(e) =>
                     handleResultChange("triglycerides", e.target.value)
@@ -175,7 +177,7 @@ const LipidProfileReport = ({
               <td className="border border-gray-300 p-2">HDL</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.hdl, normalRanges.hdl) ? "font-bold text-red-600" : ""}`}
                   value={results.hdl}
                   onChange={(e) => handleResultChange("hdl", e.target.value)}
                 />
@@ -195,7 +197,7 @@ const LipidProfileReport = ({
               <td className="border border-gray-300 p-2">LDL</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.ldl, normalRanges.ldl) ? "font-bold text-red-600" : ""}`}
                   value={results.ldl}
                   onChange={(e) => handleResultChange("ldl", e.target.value)}
                 />
@@ -215,7 +217,7 @@ const LipidProfileReport = ({
               <td className="border border-gray-300 p-2">VLDL</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.vldl, normalRanges.vldl) ? "font-bold text-red-600" : ""}`}
                   value={results.vldl}
                   onChange={(e) => handleResultChange("vldl", e.target.value)}
                 />
@@ -235,7 +237,7 @@ const LipidProfileReport = ({
               <td className="border border-gray-300 p-2">LDL - HDL ratio</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.ldlHdlRatio, normalRanges.ldlHdlRatio) ? "font-bold text-red-600" : ""}`}
                   value={results.ldlHdlRatio}
                   onChange={(e) =>
                     handleResultChange("ldlHdlRatio", e.target.value)
@@ -257,15 +259,19 @@ const LipidProfileReport = ({
         </table>
 
         {/* قسم التعليقات */}
-        <div className="mt-4 p-4 border-t border-gray-200">
-          <div className="font-bold mb-2">Comments:</div>
-          <Textarea
-            className="w-full"
-            rows={3}
-            value={comments}
-            onChange={(e) => setComments(e.target.value)}
-            placeholder="Add any comments or notes here..."
-          />
+        <div className="mt-4 p-2 border-t border-gray-300">
+          <div className="font-bold">Comment:</div>
+          <div className="mt-1">
+            <TextFormatter
+              value={comments}
+              onChange={setComments}
+              rows={2}
+              placeholder="Lipid profile results."
+            />
+          </div>
+          <div className="mt-4 text-right">
+            <div className="font-bold">Signature</div>
+          </div>
         </div>
       </CardContent>
     </Card>

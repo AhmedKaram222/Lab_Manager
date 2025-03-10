@@ -1,8 +1,88 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, Users, FileText, DollarSign } from "lucide-react";
+import { getPatients, getTestResults } from "../tests/TestsService";
 import RecentTestsTable from "../tests/RecentTestsTable";
 
 const DashboardPage = () => {
+  // استرجاع بيانات المرضى والتحاليل
+  const [stats, setStats] = useState({
+    totalPatients: 0,
+    dailyTests: 0,
+    completedTests: 0,
+    dailyRevenue: 0,
+    pendingTests: 0,
+    completionPercentage: 0,
+  });
+
+  useEffect(() => {
+    // استرجاع بيانات المرضى
+    const patients = getPatients();
+    const testResults = getTestResults();
+
+    // الحصول على التاريخ الحالي
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // حساب المرضى اليوم
+    const todayPatients = patients.filter((patient) => {
+      if (!patient.date) return false;
+      const patientDate = new Date(patient.date);
+      patientDate.setHours(0, 0, 0, 0);
+      return patientDate.getTime() === today.getTime();
+    });
+
+    // حساب التحاليل اليومية
+    let dailyTestsCount = 0;
+    let dailyRevenue = 0;
+
+    todayPatients.forEach((patient) => {
+      if (patient.test1) dailyTestsCount++;
+      if (patient.test2) dailyTestsCount++;
+      if (patient.test3) dailyTestsCount++;
+
+      // حساب الإيرادات
+      dailyRevenue += patient.total || 0;
+    });
+
+    // حساب التحاليل المكتملة
+    const completedTestsCount = testResults.filter((result) => {
+      if (!result.date) return false;
+      const resultDate = new Date(result.date);
+      resultDate.setHours(0, 0, 0, 0);
+      return (
+        resultDate.getTime() === today.getTime() &&
+        result.status === "completed"
+      );
+    }).length;
+
+    // حساب التحاليل المعلقة
+    const pendingTestsCount = dailyTestsCount - completedTestsCount;
+
+    // حساب نسبة الإكمال
+    const completionPercentage =
+      dailyTestsCount > 0
+        ? Math.round((completedTestsCount / dailyTestsCount) * 100)
+        : 0;
+
+    setStats({
+      totalPatients: patients.length,
+      dailyTests: dailyTestsCount,
+      completedTests: completedTestsCount,
+      dailyRevenue: dailyRevenue,
+      pendingTests: pendingTestsCount,
+      completionPercentage: completionPercentage,
+    });
+  }, []);
+
+  // حساب المرضى اليوم
+  const todayPatients = getPatients().filter((patient) => {
+    if (!patient.date) return false;
+    const patientDate = new Date(patient.date);
+    const today = new Date();
+    return patientDate.toDateString() === today.toDateString();
+  });
+
   return (
     <div className="space-y-6" dir="rtl">
       <h1 className="text-3xl font-bold">لوحة التحكم</h1>
@@ -10,27 +90,27 @@ const DashboardPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="إجمالي المرضى"
-          value="120"
+          value={stats.totalPatients.toString()}
           icon={<Users className="h-6 w-6" />}
-          description="+5 اليوم"
+          description={`${todayPatients.length} اليوم`}
         />
         <StatCard
           title="التحاليل اليومية"
-          value="24"
+          value={stats.dailyTests.toString()}
           icon={<FileText className="h-6 w-6" />}
-          description="8 قيد الانتظار"
+          description={`${stats.pendingTests} قيد الانتظار`}
         />
         <StatCard
           title="التحاليل المكتملة"
-          value="16"
+          value={stats.completedTests.toString()}
           icon={<Activity className="h-6 w-6" />}
-          description="67% من الإجمالي"
+          description={`${stats.completionPercentage}% من الإجمالي`}
         />
         <StatCard
           title="الإيرادات اليومية"
-          value="1,250 ج.م"
+          value={`${stats.dailyRevenue} ج.م`}
           icon={<DollarSign className="h-6 w-6" />}
-          description="+15% من أمس"
+          description="إيرادات اليوم"
         />
       </div>
 
@@ -49,7 +129,7 @@ const DashboardPage = () => {
             <CardTitle>إجراءات سريعة</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <QuickAction title="تسجيل مريض جديد" path="/patients/new" />
+            <QuickAction title="تسجيل مريض جديد" path="/patient-registration" />
             <QuickAction title="إضافة تحليل جديد" path="/tests/new" />
             <QuickAction title="عرض نتائج التحاليل" path="/results" />
             <QuickAction title="البحث عن مريض" path="/search" />

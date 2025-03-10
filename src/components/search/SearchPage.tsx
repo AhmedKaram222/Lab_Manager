@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,43 +12,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, User, FileText } from "lucide-react";
 
-const patients = [
-  {
-    id: "1",
-    name: "أحمد محمد",
-    age: 45,
-    phone: "01012345678",
-    lastVisit: "2023-06-10",
-  },
-  {
-    id: "2",
-    name: "سارة أحمد",
-    age: 32,
-    phone: "01112345678",
-    lastVisit: "2023-06-12",
-  },
-  {
-    id: "3",
-    name: "محمد علي",
-    age: 28,
-    phone: "01212345678",
-    lastVisit: "2023-06-13",
-  },
-  {
-    id: "4",
-    name: "فاطمة حسن",
-    age: 50,
-    phone: "01512345678",
-    lastVisit: "2023-06-14",
-  },
-  {
-    id: "5",
-    name: "خالد عبدالله",
-    age: 35,
-    phone: "01612345678",
-    lastVisit: "2023-06-15",
-  },
-];
+// استيراد وظائف التعامل مع البيانات
+import { getPatients } from "../tests/TestsService";
 
 const tests = [
   {
@@ -84,15 +49,25 @@ const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchType, setSearchType] = useState("name");
   const [activeTab, setActiveTab] = useState("patients");
+  const [patients, setPatients] = useState<any[]>([]);
+
+  // استرجاع بيانات المرضى عند تحميل الصفحة
+  useEffect(() => {
+    // استرجاع بيانات المرضى من التخزين المحلي
+    const storedPatients = getPatients();
+    setPatients(storedPatients);
+  }, []);
 
   // Filter patients based on search query
   const filteredPatients = patients.filter((patient) => {
     if (!searchQuery) return true;
 
     if (searchType === "name") {
-      return patient.name.includes(searchQuery);
+      return patient.name && patient.name.includes(searchQuery);
     } else if (searchType === "phone") {
-      return patient.phone.includes(searchQuery);
+      return patient.phone && patient.phone.includes(searchQuery);
+    } else if (searchType === "fileCode") {
+      return patient.fileCode && patient.fileCode.includes(searchQuery);
     }
 
     return true;
@@ -140,6 +115,7 @@ const SearchPage = () => {
                 <SelectContent>
                   <SelectItem value="name">الاسم</SelectItem>
                   <SelectItem value="phone">رقم الهاتف</SelectItem>
+                  <SelectItem value="fileCode">رقم الملف</SelectItem>
                   <SelectItem value="testType">نوع التحليل</SelectItem>
                 </SelectContent>
               </Select>
@@ -177,7 +153,7 @@ const SearchPage = () => {
                         رقم الهاتف
                       </th>
                       <th className="text-right py-3 px-4 font-medium">
-                        آخر زيارة
+                        تاريخ التسجيل
                       </th>
                       <th className="text-right py-3 px-4 font-medium">
                         الإجراءات
@@ -192,8 +168,8 @@ const SearchPage = () => {
                       >
                         <td className="py-3 px-4">{patient.name}</td>
                         <td className="py-3 px-4">{patient.age}</td>
-                        <td className="py-3 px-4">{patient.phone}</td>
-                        <td className="py-3 px-4">{patient.lastVisit}</td>
+                        <td className="py-3 px-4">{patient.phone || "-"}</td>
+                        <td className="py-3 px-4">{patient.date || "-"}</td>
                         <td className="py-3 px-4">
                           <div className="flex gap-2">
                             <Button variant="outline" size="sm">

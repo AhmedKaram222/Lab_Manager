@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { isOutOfRange } from "./utils";
+import TextFormatter from "@/components/ui/text-formatter";
+import FormattedText from "@/components/ui/formatted-text";
 
 interface StoolAnalysisReportProps {
   patientName?: string;
@@ -16,7 +18,7 @@ const StoolAnalysisReport = ({
   patientName = "",
   patientAge = "",
   patientGender = "",
-  reportDate = new Date().toLocaleDateString(),
+  reportDate = new Date().toLocaleDateString("en-GB"), // تنسيق DD/MM/YYYY
   reportNumber = "",
   doctorName = "",
 }: StoolAnalysisReportProps) => {
@@ -154,7 +156,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">Color</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.color, normalRanges.color) ? "font-bold text-red-600" : ""}`}
                   value={results.color}
                   onChange={(e) => handleResultChange("color", e.target.value)}
                 />
@@ -173,7 +175,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">Odor</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.odor, normalRanges.odor) ? "font-bold text-red-600" : ""}`}
                   value={results.odor}
                   onChange={(e) => handleResultChange("odor", e.target.value)}
                 />
@@ -192,7 +194,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">Consistency</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.consistency, normalRanges.consistency) ? "font-bold text-red-600" : ""}`}
                   value={results.consistency}
                   onChange={(e) =>
                     handleResultChange("consistency", e.target.value)
@@ -213,7 +215,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">Mucus</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.mucus, normalRanges.mucus) ? "font-bold text-red-600" : ""}`}
                   value={results.mucus}
                   onChange={(e) => handleResultChange("mucus", e.target.value)}
                 />
@@ -232,7 +234,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">Pus</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.pus, normalRanges.pus) ? "font-bold text-red-600" : ""}`}
                   value={results.pus}
                   onChange={(e) => handleResultChange("pus", e.target.value)}
                 />
@@ -251,7 +253,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">Blood</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.blood, normalRanges.blood) ? "font-bold text-red-600" : ""}`}
                   value={results.blood}
                   onChange={(e) => handleResultChange("blood", e.target.value)}
                 />
@@ -270,7 +272,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">Parasite</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.parasite, normalRanges.parasite) ? "font-bold text-red-600" : ""}`}
                   value={results.parasite}
                   onChange={(e) =>
                     handleResultChange("parasite", e.target.value)
@@ -291,7 +293,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">Undigested Food</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.undigestedFood, normalRanges.undigestedFood) ? "font-bold text-red-600" : ""}`}
                   value={results.undigestedFood}
                   onChange={(e) =>
                     handleResultChange("undigestedFood", e.target.value)
@@ -317,7 +319,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">Pus Cells</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.pusCells, normalRanges.pusCells) ? "font-bold text-red-600" : ""}`}
                   value={results.pusCells}
                   onChange={(e) =>
                     handleResultChange("pusCells", e.target.value)
@@ -338,7 +340,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">RBCs</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.rbcs, normalRanges.rbcs) ? "font-bold text-red-600" : ""}`}
                   value={results.rbcs}
                   onChange={(e) => handleResultChange("rbcs", e.target.value)}
                 />
@@ -357,7 +359,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">Starch Granules</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.starchGranules, normalRanges.starchGranules) ? "font-bold text-red-600" : ""}`}
                   value={results.starchGranules}
                   onChange={(e) =>
                     handleResultChange("starchGranules", e.target.value)
@@ -378,7 +380,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">Fat Globules</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.fatGlobules, normalRanges.fatGlobules) ? "font-bold text-red-600" : ""}`}
                   value={results.fatGlobules}
                   onChange={(e) =>
                     handleResultChange("fatGlobules", e.target.value)
@@ -399,7 +401,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">Vegetable Cells</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.vegetableCells, normalRanges.vegetableCells) ? "font-bold text-red-600" : ""}`}
                   value={results.vegetableCells}
                   onChange={(e) =>
                     handleResultChange("vegetableCells", e.target.value)
@@ -420,7 +422,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">Muscle Fibers</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.muscleFibers, normalRanges.muscleFibers) ? "font-bold text-red-600" : ""}`}
                   value={results.muscleFibers}
                   onChange={(e) =>
                     handleResultChange("muscleFibers", e.target.value)
@@ -448,7 +450,7 @@ const StoolAnalysisReport = ({
               </td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.protozoaVegetative, normalRanges.protozoaVegetative) ? "font-bold text-red-600" : ""}`}
                   value={results.protozoaVegetative}
                   onChange={(e) =>
                     handleResultChange("protozoaVegetative", e.target.value)
@@ -472,7 +474,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">Protozoa (Cysts)</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.protozonCysts, normalRanges.protozonCysts) ? "font-bold text-red-600" : ""}`}
                   value={results.protozonCysts}
                   onChange={(e) =>
                     handleResultChange("protozonCysts", e.target.value)
@@ -493,7 +495,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">Helminths (Larvae)</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.helminthsLarvae, normalRanges.helminthsLarvae) ? "font-bold text-red-600" : ""}`}
                   value={results.helminthsLarvae}
                   onChange={(e) =>
                     handleResultChange("helminthsLarvae", e.target.value)
@@ -514,7 +516,7 @@ const StoolAnalysisReport = ({
               <td className="border border-gray-300 p-2">Helminths (Ova)</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.helminthsOva, normalRanges.helminthsOva) ? "font-bold text-red-600" : ""}`}
                   value={results.helminthsOva}
                   onChange={(e) =>
                     handleResultChange("helminthsOva", e.target.value)
@@ -535,15 +537,19 @@ const StoolAnalysisReport = ({
         </table>
 
         {/* قسم التعليقات */}
-        <div className="mt-4 p-4 border-t border-gray-200">
-          <div className="font-bold mb-2">Comments:</div>
-          <Textarea
-            className="w-full"
-            rows={3}
-            value={comments}
-            onChange={(e) => setComments(e.target.value)}
-            placeholder="Add any comments or notes here..."
-          />
+        <div className="mt-4 p-2 border-t border-gray-300">
+          <div className="font-bold">Comment:</div>
+          <div className="mt-1">
+            <TextFormatter
+              value={comments}
+              onChange={setComments}
+              rows={2}
+              placeholder="Stool analysis results."
+            />
+          </div>
+          <div className="mt-4 text-right">
+            <div className="font-bold">Signature</div>
+          </div>
         </div>
       </CardContent>
     </Card>

@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { isOutOfRange } from "./utils";
+import TextFormatter from "@/components/ui/text-formatter";
+import FormattedText from "@/components/ui/formatted-text";
 
 interface RenalFunctionReportProps {
   patientName?: string;
@@ -16,7 +18,7 @@ const RenalFunctionReport = ({
   patientName = "",
   patientAge = "",
   patientGender = "",
-  reportDate = new Date().toLocaleDateString(),
+  reportDate = new Date().toLocaleDateString("en-GB"), // تنسيق DD/MM/YYYY
   reportNumber = "",
   doctorName = "",
 }: RenalFunctionReportProps) => {
@@ -125,7 +127,7 @@ const RenalFunctionReport = ({
               <td className="border border-gray-300 p-2">Creatinine</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.creatinine, normalRanges.creatinine) ? "font-bold text-red-600" : ""}`}
                   value={results.creatinine}
                   onChange={(e) =>
                     handleResultChange("creatinine", e.target.value)
@@ -147,7 +149,7 @@ const RenalFunctionReport = ({
               <td className="border border-gray-300 p-2">Urea</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.urea, normalRanges.urea) ? "font-bold text-red-600" : ""}`}
                   value={results.urea}
                   onChange={(e) => handleResultChange("urea", e.target.value)}
                 />
@@ -167,7 +169,7 @@ const RenalFunctionReport = ({
               <td className="border border-gray-300 p-2">Uric Acid</td>
               <td className="border border-gray-300 p-2 text-center">
                 <Input
-                  className="text-center h-8 p-1"
+                  className={`text-center h-8 p-1 ${isOutOfRange(results.uricAcid, normalRanges.uricAcid) ? "font-bold text-red-600" : ""}`}
                   value={results.uricAcid}
                   onChange={(e) =>
                     handleResultChange("uricAcid", e.target.value)
@@ -189,15 +191,19 @@ const RenalFunctionReport = ({
         </table>
 
         {/* قسم التعليقات */}
-        <div className="mt-4 p-4 border-t border-gray-200">
-          <div className="font-bold mb-2">Comments:</div>
-          <Textarea
-            className="w-full"
-            rows={3}
-            value={comments}
-            onChange={(e) => setComments(e.target.value)}
-            placeholder="Add any comments or notes here..."
-          />
+        <div className="mt-4 p-2 border-t border-gray-300">
+          <div className="font-bold">Comment:</div>
+          <div className="mt-1">
+            <TextFormatter
+              value={comments}
+              onChange={setComments}
+              rows={2}
+              placeholder="Renal function test results."
+            />
+          </div>
+          <div className="mt-4 text-right">
+            <div className="font-bold">Signature</div>
+          </div>
         </div>
       </CardContent>
     </Card>

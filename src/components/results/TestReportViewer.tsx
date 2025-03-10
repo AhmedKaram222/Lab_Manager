@@ -3,6 +3,33 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Printer, Download, FileDown } from "lucide-react";
+import FormattedText from "@/components/ui/formatted-text";
+
+// تحديد نوع تقرير CBC بناءً على العمر والجنس
+const getReportTypeForCBC = (
+  age: string = "",
+  gender: string = "",
+): "age1-2" | "age2-6" | "age6-12" | "male" | "female" => {
+  // تحويل العمر إلى رقم
+  const ageNum = parseInt(age);
+
+  // إذا كان العمر غير صالح، نستخدم الجنس
+  if (isNaN(ageNum)) {
+    return gender === "ذكر" || gender === "Male" ? "male" : "female";
+  }
+
+  // تحديد النوع بناءً على العمر
+  if (ageNum >= 1 && ageNum < 2) {
+    return "age1-2";
+  } else if (ageNum >= 2 && ageNum < 6) {
+    return "age2-6";
+  } else if (ageNum >= 6 && ageNum < 12) {
+    return "age6-12";
+  } else {
+    // للأعمار 12 وما فوق، نستخدم الجنس
+    return gender === "ذكر" || gender === "Male" ? "male" : "female";
+  }
+};
 import CBCReport from "../lab-reports/CBCReport";
 import LipidProfileReport from "../lab-reports/LipidProfileReport";
 import BloodSugarReport from "../lab-reports/BloodSugarReport";
@@ -29,8 +56,8 @@ const TestReportViewer = ({
   patientName = "محمد أحمد",
   patientAge = "35",
   patientGender = "ذكر",
-  reportDate = new Date().toLocaleDateString(),
-  reportNumber = "12345",
+  reportDate = new Date().toLocaleDateString("en-GB"), // تنسيق DD/MM/YYYY
+  reportNumber = `result_${new Date().toLocaleDateString("en-GB").replace(/\//g, "")}`,
   doctorName = "د. أحمد محمد",
   reportType,
 }: TestReportViewerProps) => {
@@ -64,29 +91,29 @@ const TestReportViewer = ({
     // إضافة فئة للطباعة على عنصر الجسم
     document.body.classList.add("printing-report");
 
-    // تحديد نطاق الطباعة ليكون مثل نطاق PDF
-    const reportElement = document.getElementById("test-report-content");
-    if (reportElement) {
-      const activeTabContent = reportElement.querySelector(
-        '[data-state="active"]',
-      );
-      if (activeTabContent) {
-        const reportCard = activeTabContent.querySelector(".report-card");
-        if (reportCard) {
-          // إضافة فئة خاصة للطباعة
-          reportCard.classList.add("print-only");
-        }
-      }
-    }
-
-    window.print();
-
-    // إزالة الفئات بعد الطباعة
+    // تأخير قصير للسماح بتحديث DOM
     setTimeout(() => {
-      document.body.classList.remove("printing-report");
-      const printOnlyElements = document.querySelectorAll(".print-only");
-      printOnlyElements.forEach((el) => el.classList.remove("print-only"));
-    }, 500);
+      try {
+        // استخدام واجهة برمجة التطبيقات للطباعة لعرض مربع حوار الطابعات
+        const mediaQueryList = window.matchMedia("print");
+
+        // إضافة مستمع للحدث لمعرفة متى تنتهي الطباعة
+        const handlePrintEvent = (mql) => {
+          if (!mql.matches) {
+            // تمت الطباعة أو تم إلغاؤها
+            document.body.classList.remove("printing-report");
+            mediaQueryList.removeListener(handlePrintEvent);
+          }
+        };
+
+        mediaQueryList.addListener(handlePrintEvent);
+        window.print();
+      } catch (error) {
+        console.error("Print error:", error);
+        // إزالة الفئات في حالة حدوث خطأ
+        document.body.classList.remove("printing-report");
+      }
+    }, 100);
   };
 
   const handleDownloadPDF = async () => {
@@ -168,7 +195,7 @@ const TestReportViewer = ({
                   reportDate={reportDate}
                   reportNumber={reportNumber}
                   doctorName={doctorName}
-                  reportType={patientGender === "ذكر" ? "male" : "female"}
+                  reportType={getReportTypeForCBC(patientAge, patientGender)}
                 />
               </TabsContent>
 

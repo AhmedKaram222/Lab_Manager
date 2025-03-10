@@ -1,75 +1,92 @@
 /* أنماط خاصة بالطباعة */
+@page {
+  size: A4;
+  margin: 10mm;
+}
+
 @media print {
-  /* إخفاء العناصر التي لا نريد طباعتها */
-  header,
-  footer,
-  nav,
-  aside,
-  .sidebar,
-  .tabs-list,
-  .button,
-  button,
-  .card-header,
-  .card > div:first-child,
-  .tabs-content > div:not([data-state="active"]),
-  *:not(.print-only):not(.print-only *):not(.report-card.print-only):not(
-      .report-card.print-only *
-    ) {
+  /* إخفاء كل شيء ما عدا التقرير */
+  body * {
+    visibility: hidden;
+  }
+
+  /* إظهار التقرير فقط */
+  .report-card,
+  .report-card * {
+    visibility: visible;
+  }
+
+  /* تنسيق التقرير */
+  .report-card {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* تنسيق القيم خارج النطاق المرجعي عند الطباعة */
+  .text-red-600,
+  span.text-red-600 {
+    color: #dc2626 !important;
+    font-weight: bold !important;
+  }
+
+  /* تنسيق النصوص المنسقة */
+  b,
+  strong {
+    font-weight: bold !important;
+  }
+
+  i,
+  em {
+    font-style: italic !important;
+  }
+
+  u {
+    text-decoration: underline !important;
+  }
+
+  /* إظهار عنوان التقرير */
+  .print-visible {
+    display: block !important;
+  }
+
+  /* تنسيق خاص للطباعة عند استخدام فئة printing-report */
+  body.printing-report * {
+    visibility: hidden;
+  }
+
+  body.printing-report .report-card,
+  body.printing-report .report-card * {
+    visibility: visible;
+  }
+
+  body.printing-report .report-card {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* إخفاء أزرار التحكم في التقرير عند الطباعة */
+  body.printing-report button,
+  body.printing-report .button,
+  body.printing-report .tabs-list,
+  body.printing-report .card-header:not(.print-visible) {
     display: none !important;
   }
 
-  /* عرض التقرير النشط فقط */
-  .tabs-content > div[data-state="active"] {
-    display: block !important;
+  /* إظهار التبويب النشط فقط */
+  body.printing-report .tabs-content > div:not([data-state="active"]) {
+    display: none !important;
   }
 
-  /* تنسيق الصفحة */
-  body {
-    margin: 0;
-    padding: 0;
-    background-color: white;
-  }
-
-  /* تنسيق بطاقة التقرير */
-  .report-card {
-    box-shadow: none !important;
-    border: none !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-    position: relative !important;
-    z-index: 9999 !important;
-    page-break-inside: avoid !important;
-  }
-
-  /* تنسيق حاوية التقرير */
-  .report-content-wrapper {
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 100% !important;
-  }
-
-  /* إزالة الهوامش والحدود من الجداول */
-  table {
-    width: 100% !important;
-    border-collapse: collapse !important;
-  }
-
-  /* تنسيق عنوان التقرير */
-  .card-header {
-    text-align: center !important;
-    margin-bottom: 1rem !important;
-  }
-
-  /* تنسيق محتوى التقرير */
-  .card-content {
-    padding: 0 !important;
-  }
-
-  /* إظهار عنوان التقرير في الطباعة */
-  .report-card .card-header {
+  body.printing-report .tabs-content > div[data-state="active"] {
     display: block !important;
   }
 }
