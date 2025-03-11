@@ -4,53 +4,96 @@
   margin: 10mm;
 }
 
+/* تنسيق القيم خارج النطاق المرجعي عند الطباعة */
 @media print {
-  /* إخفاء كل شيء ما عدا التقرير */
-  body * {
-    visibility: hidden;
-  }
-
-  /* إظهار التقرير فقط */
-  .report-card,
-  .report-card * {
-    visibility: visible;
-  }
-
-  /* تنسيق التقرير */
-  .report-card {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-  }
-
-  /* تنسيق القيم خارج النطاق المرجعي عند الطباعة */
-  .text-red-600,
-  span.text-red-600 {
+  .text-red-600 {
     color: #dc2626 !important;
     font-weight: bold !important;
   }
+}
 
-  /* تنسيق النصوص المنسقة */
-  b,
-  strong {
-    font-weight: bold !important;
+@media print {
+  /* إخفاء العناصر التي لا نريد طباعتها */
+  header,
+  footer,
+  nav,
+  aside,
+  .sidebar,
+  .tabs-list,
+  .button,
+  button,
+  .card > div:first-child:not(.print-visible),
+  .tabs-content > div:not([data-state="active"]),
+  .no-print {
+    display: none !important;
   }
 
-  i,
-  em {
-    font-style: italic !important;
-  }
-
-  u {
-    text-decoration: underline !important;
-  }
-
-  /* إظهار عنوان التقرير */
-  .print-visible {
+  /* عرض التقرير النشط فقط */
+  .tabs-content > div[data-state="active"] {
     display: block !important;
+  }
+
+  /* تنسيق الصفحة */
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: white;
+  }
+
+  /* تنسيق بطاقة التقرير */
+  .report-card {
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* تنسيق حاوية التقرير */
+  .report-content-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  /* إزالة الهوامش والحدود من الجداول */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  /* تنسيق عنوان التقرير */
+  .report-card.print-only .card-header {
+    display: block !important;
+    text-align: center !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* تنسيق محتوى التقرير */
+  .report-card.print-only .card-content {
+    padding: 0 !important;
+  }
+
+  /* تأكيد عدم تقسيم التقرير على عدة صفحات */
+  #test-report-content {
+    page-break-inside: avoid !important;
+  }
+
+  /* ضمان طباعة بيانات المريض مع التقرير */
+  .report-card .p-4.border-b.border-gray-200,
+  .report-card .p-4.border-b.border-gray-200 * {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  /* إخفاء رسائل التنسيق */
+  .no-print {
+    display: none !important;
+    visibility: hidden !important;
   }
 
   /* تنسيق خاص للطباعة عند استخدام فئة printing-report */
@@ -77,16 +120,9 @@
   body.printing-report button,
   body.printing-report .button,
   body.printing-report .tabs-list,
-  body.printing-report .card-header:not(.print-visible) {
+  body.printing-report .card-header:not(.print-visible),
+  body.printing-report .no-print {
     display: none !important;
-  }
-
-  /* إظهار التبويب النشط فقط */
-  body.printing-report .tabs-content > div:not([data-state="active"]) {
-    display: none !important;
-  }
-
-  body.printing-report .tabs-content > div[data-state="active"] {
-    display: block !important;
+    visibility: hidden !important;
   }
 }

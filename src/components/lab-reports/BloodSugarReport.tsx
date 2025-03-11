@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import FormattedInput from "@/components/ui/formatted-input";
 import { isOutOfRange } from "./utils";
 import TextFormatter from "@/components/ui/text-formatter";
 import FormattedText from "@/components/ui/formatted-text";
@@ -128,10 +129,10 @@ const BloodSugarReport = ({
                   Fasting Blood Sugar [ FBS ]
                 </td>
                 <td className="border border-gray-300 p-2 text-center">
-                  <Input
-                    className={`text-center h-8 p-1 ${isOutOfRange(results.fbs, normalRanges.fbs) ? "font-bold text-red-600" : ""}`}
+                  <FormattedInput
+                    isOutOfRange={isOutOfRange(results.fbs, normalRanges.fbs)}
                     value={results.fbs}
-                    onChange={(e) => handleResultChange("fbs", e.target.value)}
+                    onChange={(value) => handleResultChange("fbs", value)}
                   />
                 </td>
                 <td className="border border-gray-300 p-2 text-center">
@@ -154,10 +155,10 @@ const BloodSugarReport = ({
                   Random Blood Sugar [ RBS ]
                 </td>
                 <td className="border border-gray-300 p-2 text-center">
-                  <Input
-                    className={`text-center h-8 p-1 ${isOutOfRange(results.rbs, normalRanges.rbs) ? "font-bold text-red-600" : ""}`}
+                  <FormattedInput
+                    isOutOfRange={isOutOfRange(results.rbs, normalRanges.rbs)}
                     value={results.rbs}
-                    onChange={(e) => handleResultChange("rbs", e.target.value)}
+                    onChange={(value) => handleResultChange("rbs", value)}
                   />
                 </td>
                 <td className="border border-gray-300 p-2 text-center">
@@ -180,10 +181,10 @@ const BloodSugarReport = ({
                   Postprandial Blood Sugar [ PPS ]
                 </td>
                 <td className="border border-gray-300 p-2 text-center">
-                  <Input
-                    className={`text-center h-8 p-1 ${isOutOfRange(results.pps, normalRanges.pps) ? "font-bold text-red-600" : ""}`}
+                  <FormattedInput
+                    isOutOfRange={isOutOfRange(results.pps, normalRanges.pps)}
                     value={results.pps}
-                    onChange={(e) => handleResultChange("pps", e.target.value)}
+                    onChange={(value) => handleResultChange("pps", value)}
                   />
                 </td>
                 <td className="border border-gray-300 p-2 text-center">

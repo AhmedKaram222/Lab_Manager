@@ -108,7 +108,55 @@ const ResultsPage = () => {
         localStorage.setItem("testResults", JSON.stringify(updatedResults));
       }
     }
-  }, []);
+
+    // التحقق من وجود معرف تحليل في عنوان URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const testId = urlParams.get("testId");
+    const shouldPrint = urlParams.get("print") === "true";
+    const shouldDownload = urlParams.get("download") === "true";
+
+    if (testId) {
+      // البحث عن التحليل بواسطة المعرف
+      const test =
+        storedResults.find((t) => t.id === testId) ||
+        JSON.parse(localStorage.getItem("completedTests") || "[]").find(
+          (t) => t.id === testId,
+        );
+
+      if (test) {
+        setSelectedPatient({
+          id: test.id,
+          name: test.patientName,
+          age: test.age,
+          gender: test.gender,
+          reportType:
+            test.reportType || getReportTypeFromTestName(test.testType),
+        });
+        setShowReport(true);
+
+        // إذا كان هناك طلب للطباعة أو التنزيل، قم بتنفيذه بعد تحميل التقرير
+        if (shouldPrint || shouldDownload) {
+          setTimeout(() => {
+            if (shouldPrint) {
+              // طباعة التقرير
+              document.body.classList.add("printing-report");
+              window.print();
+              setTimeout(() => {
+                document.body.classList.remove("printing-report");
+                // إعادة توجيه المستخدم إلى صفحة التحاليل بعد الطباعة
+                navigate("/tests");
+              }, 1000);
+            } else if (shouldDownload) {
+              // تنزيل التقرير كملف PDF
+              handleDownloadPDF(test);
+              // إعادة توجيه المستخدم إلى صفحة التحاليل بعد التنزيل
+              setTimeout(() => navigate("/tests"), 2000);
+            }
+          }, 1000);
+        }
+      }
+    }
+  }, [navigate]);
 
   const handleViewResults = (patient: {
     id: string;

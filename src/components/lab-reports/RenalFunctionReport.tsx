@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import FormattedInput from "@/components/ui/formatted-input";
 import { isOutOfRange } from "./utils";
 import TextFormatter from "@/components/ui/text-formatter";
 import FormattedText from "@/components/ui/formatted-text";
@@ -126,12 +127,13 @@ const RenalFunctionReport = ({
             <tr>
               <td className="border border-gray-300 p-2">Creatinine</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.creatinine, normalRanges.creatinine) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(
+                    results.creatinine,
+                    normalRanges.creatinine,
+                  )}
                   value={results.creatinine}
-                  onChange={(e) =>
-                    handleResultChange("creatinine", e.target.value)
-                  }
+                  onChange={(value) => handleResultChange("creatinine", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center">mg/dl</td>
@@ -148,10 +150,10 @@ const RenalFunctionReport = ({
             <tr>
               <td className="border border-gray-300 p-2">Urea</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.urea, normalRanges.urea) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(results.urea, normalRanges.urea)}
                   value={results.urea}
-                  onChange={(e) => handleResultChange("urea", e.target.value)}
+                  onChange={(value) => handleResultChange("urea", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center">mg/dl</td>
@@ -168,12 +170,13 @@ const RenalFunctionReport = ({
             <tr>
               <td className="border border-gray-300 p-2">Uric Acid</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.uricAcid, normalRanges.uricAcid) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(
+                    results.uricAcid,
+                    normalRanges.uricAcid,
+                  )}
                   value={results.uricAcid}
-                  onChange={(e) =>
-                    handleResultChange("uricAcid", e.target.value)
-                  }
+                  onChange={(value) => handleResultChange("uricAcid", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center">mg/dl</td>

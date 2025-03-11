@@ -36,7 +36,10 @@ export const formatDate = (date: Date | string): string => {
   if (!date) return "";
 
   const dateObj = typeof date === "string" ? new Date(date) : date;
-  return dateObj.toLocaleDateString("en-GB"); // تنسيق DD/MM/YYYY
+  const day = dateObj.getDate().toString().padStart(2, "0");
+  const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+  const year = dateObj.getFullYear();
+  return `${day}/${month}/${year}`; // تنسيق DD/MM/YYYY
 };
 
 /**

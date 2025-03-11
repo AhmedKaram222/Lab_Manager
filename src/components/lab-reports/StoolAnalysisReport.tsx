@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import FormattedInput from "@/components/ui/formatted-input";
 import { isOutOfRange } from "./utils";
 import TextFormatter from "@/components/ui/text-formatter";
 import FormattedText from "@/components/ui/formatted-text";
@@ -155,10 +156,10 @@ const StoolAnalysisReport = ({
             <tr>
               <td className="border border-gray-300 p-2">Color</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.color, normalRanges.color) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(results.color, normalRanges.color)}
                   value={results.color}
-                  onChange={(e) => handleResultChange("color", e.target.value)}
+                  onChange={(value) => handleResultChange("color", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center">

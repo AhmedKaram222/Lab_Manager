@@ -131,9 +131,6 @@ const TextFormatter = ({
         onSelect={handleSelect}
         placeholder={placeholder}
       />
-      <div className="text-sm text-muted-foreground">
-        حدد النص ثم اضغط على أحد أزرار التنسيق لتطبيق التنسيق
-      </div>
     </div>
   );
 };

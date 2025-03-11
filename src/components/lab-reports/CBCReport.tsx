@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import FormattedInput from "@/components/ui/formatted-input";
 import { isOutOfRange } from "./utils";
 import TextFormatter from "@/components/ui/text-formatter";
 import FormattedText from "@/components/ui/formatted-text";
@@ -280,11 +281,14 @@ const CBCReport = ({
             <tr>
               <td className="border border-gray-300 p-2">Erythrocytic count</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.erythrocyticCount, currentNormalRanges.erythrocyticCount) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(
+                    results.erythrocyticCount,
+                    currentNormalRanges.erythrocyticCount,
+                  )}
                   value={results.erythrocyticCount}
-                  onChange={(e) =>
-                    handleResultChange("erythrocyticCount", e.target.value)
+                  onChange={(value) =>
+                    handleResultChange("erythrocyticCount", value)
                   }
                 />
               </td>
@@ -304,12 +308,13 @@ const CBCReport = ({
             <tr>
               <td className="border border-gray-300 p-2">Hemoglobin</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.hemoglobin, currentNormalRanges.hemoglobin) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(
+                    results.hemoglobin,
+                    currentNormalRanges.hemoglobin,
+                  )}
                   value={results.hemoglobin}
-                  onChange={(e) =>
-                    handleResultChange("hemoglobin", e.target.value)
-                  }
+                  onChange={(value) => handleResultChange("hemoglobin", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center">g/dl</td>
@@ -328,12 +333,13 @@ const CBCReport = ({
                 Hematocrit (P.C.V.)
               </td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.hematocrit, currentNormalRanges.hematocrit) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(
+                    results.hematocrit,
+                    currentNormalRanges.hematocrit,
+                  )}
                   value={results.hematocrit}
-                  onChange={(e) =>
-                    handleResultChange("hematocrit", e.target.value)
-                  }
+                  onChange={(value) => handleResultChange("hematocrit", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center">%</td>
@@ -350,10 +356,13 @@ const CBCReport = ({
             <tr>
               <td className="border border-gray-300 p-2">M.C.V.</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.mcv, currentNormalRanges.mcv) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(
+                    results.mcv,
+                    currentNormalRanges.mcv,
+                  )}
                   value={results.mcv}
-                  onChange={(e) => handleResultChange("mcv", e.target.value)}
+                  onChange={(value) => handleResultChange("mcv", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center">fl</td>
@@ -370,10 +379,13 @@ const CBCReport = ({
             <tr>
               <td className="border border-gray-300 p-2">M.C.H.</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.mch, currentNormalRanges.mch) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(
+                    results.mch,
+                    currentNormalRanges.mch,
+                  )}
                   value={results.mch}
-                  onChange={(e) => handleResultChange("mch", e.target.value)}
+                  onChange={(value) => handleResultChange("mch", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center">pg</td>
@@ -390,10 +402,13 @@ const CBCReport = ({
             <tr>
               <td className="border border-gray-300 p-2">M.C.H.C</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.mchc, currentNormalRanges.mchc) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(
+                    results.mchc,
+                    currentNormalRanges.mchc,
+                  )}
                   value={results.mchc}
-                  onChange={(e) => handleResultChange("mchc", e.target.value)}
+                  onChange={(value) => handleResultChange("mchc", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center">g/dl</td>
@@ -410,11 +425,14 @@ const CBCReport = ({
             <tr>
               <td className="border border-gray-300 p-2">Platelet count</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.plateletCount, currentNormalRanges.plateletCount) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(
+                    results.plateletCount,
+                    currentNormalRanges.plateletCount,
+                  )}
                   value={results.plateletCount}
-                  onChange={(e) =>
-                    handleResultChange("plateletCount", e.target.value)
+                  onChange={(value) =>
+                    handleResultChange("plateletCount", value)
                   }
                 />
               </td>
@@ -436,11 +454,14 @@ const CBCReport = ({
                 Total leucocytic count
               </td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.totalLeukocyticCount, currentNormalRanges.totalLeukocyticCount) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(
+                    results.totalLeukocyticCount,
+                    currentNormalRanges.totalLeukocyticCount,
+                  )}
                   value={results.totalLeukocyticCount}
-                  onChange={(e) =>
-                    handleResultChange("totalLeukocyticCount", e.target.value)
+                  onChange={(value) =>
+                    handleResultChange("totalLeukocyticCount", value)
                   }
                 />
               </td>

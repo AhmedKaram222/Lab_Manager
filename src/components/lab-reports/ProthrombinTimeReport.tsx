@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import FormattedInput from "@/components/ui/formatted-input";
 import { isOutOfRange } from "./utils";
 import TextFormatter from "@/components/ui/text-formatter";
 import FormattedText from "@/components/ui/formatted-text";
@@ -133,10 +134,10 @@ const ProthrombinTimeReport = ({
                 Prothrombin Time (PT)
               </td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.pt, normalRanges.pt) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(results.pt, normalRanges.pt)}
                   value={results.pt}
-                  onChange={(e) => handleResultChange("pt", e.target.value)}
+                  onChange={(value) => handleResultChange("pt", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center">Sec</td>
@@ -153,12 +154,13 @@ const ProthrombinTimeReport = ({
             <tr>
               <td className="border border-gray-300 p-2 font-bold">Control</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.control, normalRanges.control) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(
+                    results.control,
+                    normalRanges.control,
+                  )}
                   value={results.control}
-                  onChange={(e) =>
-                    handleResultChange("control", e.target.value)
-                  }
+                  onChange={(value) => handleResultChange("control", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center">Sec</td>
@@ -175,10 +177,10 @@ const ProthrombinTimeReport = ({
             <tr>
               <td className="border border-gray-300 p-2 font-bold">Conc</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.conc, normalRanges.conc) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(results.conc, normalRanges.conc)}
                   value={results.conc}
-                  onChange={(e) => handleResultChange("conc", e.target.value)}
+                  onChange={(value) => handleResultChange("conc", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center">%</td>
@@ -195,10 +197,10 @@ const ProthrombinTimeReport = ({
             <tr>
               <td className="border border-gray-300 p-2 font-bold">INR</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.inr, normalRanges.inr) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(results.inr, normalRanges.inr)}
                   value={results.inr}
-                  onChange={(e) => handleResultChange("inr", e.target.value)}
+                  onChange={(value) => handleResultChange("inr", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center"></td>

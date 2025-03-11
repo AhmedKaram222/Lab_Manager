@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Printer, Download, FileDown } from "lucide-react";
+import { Printer, Download, FileDown, Save } from "lucide-react";
 import FormattedText from "@/components/ui/formatted-text";
+import FormattedInput from "@/components/ui/formatted-input";
+import { toast } from "@/components/ui/use-toast";
 
 // تحديد نوع تقرير CBC بناءً على العمر والجنس
 const getReportTypeForCBC = (
@@ -40,7 +42,6 @@ import ProthrombinTimeReport from "../lab-reports/ProthrombinTimeReport";
 import PregnancyTestReport from "../lab-reports/PregnancyTestReport";
 import StoolAnalysisReport from "../lab-reports/StoolAnalysisReport";
 import { downloadTestReport } from "@/lib/pdfUtils";
-import { toast } from "@/components/ui/use-toast";
 
 interface TestReportViewerProps {
   patientName?: string;
@@ -147,6 +148,49 @@ const TestReportViewer = ({
     }
   };
 
+  // حفظ نتيجة التحليل
+  const handleSaveTestResult = (reportType: string) => {
+    // إنشاء كائن نتيجة التحليل
+    const testResult = {
+      id: reportNumber || `result_${new Date().getTime()}`,
+      patientId: reportNumber?.split("_")[2] || "1",
+      patientName: patientName,
+      testType: getReportTypeName(),
+      date: new Date().toLocaleDateString(),
+      resultDate: new Date().toLocaleDateString(),
+      age: patientAge,
+      gender: patientGender,
+      status: "completed",
+      reportType: reportType,
+    };
+
+    // حفظ النتيجة في التخزين المحلي
+    const storedCompletedTests = localStorage.getItem("completedTests") || "[]";
+    const completedTests = JSON.parse(storedCompletedTests);
+
+    // التحقق من عدم وجود نتيجة مكررة
+    const existingTestIndex = completedTests.findIndex(
+      (test) => test.id === testResult.id,
+    );
+    if (existingTestIndex !== -1) {
+      // تحديث النتيجة الموجودة
+      completedTests[existingTestIndex] = testResult;
+    } else {
+      // إضافة نتيجة جديدة
+      completedTests.push(testResult);
+    }
+
+    // حفظ التغييرات
+    localStorage.setItem("completedTests", JSON.stringify(completedTests));
+
+    // عرض رسالة نجاح
+    toast({
+      title: "تم حفظ النتيجة بنجاح",
+      description: `تم حفظ نتيجة تحليل ${getReportTypeName()} للمريض ${patientName}`,
+      variant: "default",
+    });
+  };
+
   return (
     <div className="container mx-auto p-4">
       <Card>
@@ -164,6 +208,13 @@ const TestReportViewer = ({
             >
               <FileDown className="h-4 w-4 mr-2" />
               {isDownloading ? "جاري التنزيل..." : "تنزيل PDF"}
+            </Button>
+            <Button
+              variant="default"
+              onClick={() => handleSaveTestResult(activeTab)}
+            >
+              <Save className="h-4 w-4 mr-2" />
+              حفظ النتيجة
             </Button>
           </div>
         </CardHeader>

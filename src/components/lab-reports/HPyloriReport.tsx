@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import FormattedInput from "@/components/ui/formatted-input";
 import { isOutOfRange } from "./utils";
 import TextFormatter from "@/components/ui/text-formatter";
 import FormattedText from "@/components/ui/formatted-text";
@@ -143,11 +144,14 @@ const HPyloriReport = ({
                   H.Pylori Ag
                 </td>
                 <td className="border border-gray-300 p-2 text-center">
-                  <Input
-                    className={`text-center h-8 p-1 ${results.qualitative && results.qualitative.toLowerCase() === "positive" ? "font-bold text-red-600" : ""}`}
+                  <FormattedInput
+                    isOutOfRange={
+                      results.qualitative &&
+                      results.qualitative.toLowerCase() === "positive"
+                    }
                     value={results.qualitative}
-                    onChange={(e) =>
-                      handleResultChange("qualitative", e.target.value)
+                    onChange={(value) =>
+                      handleResultChange("qualitative", value)
                     }
                   />
                 </td>
@@ -167,11 +171,14 @@ const HPyloriReport = ({
                   H.Pylori Ag
                 </td>
                 <td className="border border-gray-300 p-2 text-center">
-                  <Input
-                    className={`text-center h-8 p-1 ${results.quantitative && parseFloat(results.quantitative) > 1.1 ? "font-bold text-red-600" : ""}`}
+                  <FormattedInput
+                    isOutOfRange={
+                      results.quantitative &&
+                      parseFloat(results.quantitative) > 1.1
+                    }
                     value={results.quantitative}
-                    onChange={(e) =>
-                      handleResultChange("quantitative", e.target.value)
+                    onChange={(value) =>
+                      handleResultChange("quantitative", value)
                     }
                   />
                 </td>

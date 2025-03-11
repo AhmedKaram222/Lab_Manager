@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import FormattedInput from "@/components/ui/formatted-input";
 import { isOutOfRange } from "./utils";
 import TextFormatter from "@/components/ui/text-formatter";
 import FormattedText from "@/components/ui/formatted-text";
@@ -132,12 +133,13 @@ const LipidProfileReport = ({
                 Cholesterol
               </td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.cholesterol, normalRanges.cholesterol) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(
+                    results.cholesterol,
+                    normalRanges.cholesterol,
+                  )}
                   value={results.cholesterol}
-                  onChange={(e) =>
-                    handleResultChange("cholesterol", e.target.value)
-                  }
+                  onChange={(value) => handleResultChange("cholesterol", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center">mg/dl</td>
@@ -154,11 +156,14 @@ const LipidProfileReport = ({
             <tr>
               <td className="border border-gray-300 p-2">Triglycerides</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.triglycerides, normalRanges.triglycerides) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(
+                    results.triglycerides,
+                    normalRanges.triglycerides,
+                  )}
                   value={results.triglycerides}
-                  onChange={(e) =>
-                    handleResultChange("triglycerides", e.target.value)
+                  onChange={(value) =>
+                    handleResultChange("triglycerides", value)
                   }
                 />
               </td>
@@ -176,10 +181,10 @@ const LipidProfileReport = ({
             <tr>
               <td className="border border-gray-300 p-2">HDL</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.hdl, normalRanges.hdl) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(results.hdl, normalRanges.hdl)}
                   value={results.hdl}
-                  onChange={(e) => handleResultChange("hdl", e.target.value)}
+                  onChange={(value) => handleResultChange("hdl", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center">mg/dl</td>
@@ -196,10 +201,10 @@ const LipidProfileReport = ({
             <tr>
               <td className="border border-gray-300 p-2">LDL</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.ldl, normalRanges.ldl) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(results.ldl, normalRanges.ldl)}
                   value={results.ldl}
-                  onChange={(e) => handleResultChange("ldl", e.target.value)}
+                  onChange={(value) => handleResultChange("ldl", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center">mg/dl</td>
@@ -216,10 +221,10 @@ const LipidProfileReport = ({
             <tr>
               <td className="border border-gray-300 p-2">VLDL</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.vldl, normalRanges.vldl) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(results.vldl, normalRanges.vldl)}
                   value={results.vldl}
-                  onChange={(e) => handleResultChange("vldl", e.target.value)}
+                  onChange={(value) => handleResultChange("vldl", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center">mg/dl</td>
@@ -236,12 +241,13 @@ const LipidProfileReport = ({
             <tr>
               <td className="border border-gray-300 p-2">LDL - HDL ratio</td>
               <td className="border border-gray-300 p-2 text-center">
-                <Input
-                  className={`text-center h-8 p-1 ${isOutOfRange(results.ldlHdlRatio, normalRanges.ldlHdlRatio) ? "font-bold text-red-600" : ""}`}
+                <FormattedInput
+                  isOutOfRange={isOutOfRange(
+                    results.ldlHdlRatio,
+                    normalRanges.ldlHdlRatio,
+                  )}
                   value={results.ldlHdlRatio}
-                  onChange={(e) =>
-                    handleResultChange("ldlHdlRatio", e.target.value)
-                  }
+                  onChange={(value) => handleResultChange("ldlHdlRatio", value)}
                 />
               </td>
               <td className="border border-gray-300 p-2 text-center"></td>
